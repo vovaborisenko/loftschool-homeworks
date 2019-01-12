@@ -31,7 +31,7 @@ export default class Form extends React.Component {
     };
 
     changeHandler = (e) => {
-        this.setState({error: {}});
+        // this.setState({error: {}});
         this.setState({[e.target.name]: e.target.value});
     }
 
