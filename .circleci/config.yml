@@ -27,9 +27,7 @@ jobs:
             - ~/.cache/Cypress
             - node_modules
 
-      - run:
-          name: Run linters
-          command: yarn run lint
+     
 
       - run:
           name: Set PR number
