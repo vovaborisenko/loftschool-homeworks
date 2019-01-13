@@ -31,8 +31,10 @@ export default class Form extends React.Component {
     };
 
     changeHandler = (e) => {
-        this.setState({error: {}});
-        this.setState({[e.target.name]: e.target.value});
+        this.setState({
+            [e.target.name]: e.target.value,
+            error: {}
+        });
     }
 
     validation = (e) => {
@@ -47,7 +49,10 @@ export default class Form extends React.Component {
             }
         })
 
-        this.setState({error, isValid: Object.keys(error).length === 0});
+        this.setState({
+            error, 
+            isValid: Object.keys(error).length === 0
+        });
     }
     
     render() {
