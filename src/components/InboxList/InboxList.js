@@ -1,23 +1,12 @@
 import React, { Component } from 'react';
 import MailList from '../MailList';
 import { withData } from '../../context/Data';
-import truncate from 'lodash/truncate';
 
+class InboxList extends Component{
+    render(){
+        const {data:{inbox}, ...props} = this.props;
 
-class InboxList extends Component {
-    render() {
-        const { data: { inbox }
-        } = this.props;
-
-        return (
-            <MailList 
-                className='t-inbox-list'
-                body = { inbox.map( ( { id, body } ) => ( {
-                    title: `${truncate(body, 55)}...`,
-                    link: `inbox/${id}`
-                }))}
-            />
-        );
+        return <MailList {...props} data={inbox} purpose='inbox'/>
     }
 }
 

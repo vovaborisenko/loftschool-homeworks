@@ -5,7 +5,7 @@ export default class Home extends Component {
     render() {
         return (
             <div className={styles.container}>
-                <p className="t-greeeting">Приветствуем в почтовом сервере!</p>
+                <p className="t-greeting">Приветствуем в почтовом сервере!</p>
             </div>
         );
     }

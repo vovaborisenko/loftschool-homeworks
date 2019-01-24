@@ -1,78 +1,75 @@
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { PureComponent, Fragment } from 'react';
 import { withAuth } from '../../context/Auth';
-import classnames from 'classnames';
+import { Redirect } from 'react-router-dom';
 import styles from './LoginForm.module.css';
 
-class LoginForm extends Component {
-    state = {
-        email: '',
-        password: ''
-    };
+class LoginForm extends PureComponent{
+	state = {
+		email: '',
+		password: ''
+	}
 
-    handleChange = event => {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
-    };
+	renderField = (field) => {
+		const text = field === 'password' ? 'Пароль' : 'Почта';
+		const {value} = this.state;
+		return (
+			<p key={field}>
+				<label htmlFor={field} className={styles.labelText}> { text } </label>
+				<input 
+					type={field === 'password' ? 'password' : 'text'} 
+					name={field} 
+					className={`${styles.input} t-input-${field}`} 
+					onChange={this.handleChange}
+					value={value}
+				/>
+			</p>
+		)
+	}
 
-    handleSubmit = event => {
-        event.preventDefault();
-        const { email, password } = this.state;
-        const { authorize } = this.props;
-        authorize(email, password);
-    };
+	handleChange = (event) => {
+		const {value, name} = event.target;
+		this.setState({
+			[name]: value
+		})
+	}
 
-    render () {
-        const { authError, isAuthorized } = this.props;
-        const { email, password } = this.state;
-            
-        return isAuthorized ? (
-            <Redirect to="/app" />
-        ) : (
-            <div className={styles.bg}>
-                <form className={classnames(styles.form, 't-form')} onSubmit={this.handleSubmit}>
-                    <p>
-                        <label htmlFor="email">
-                            <span className={styles.labelText}>Почта</span>
-                        </label>
-                        <input
-                            type="text"
-                            name="email"
-                            className={classnames(styles.input, 't-input-email')}
-                            value={email}
-                            onChange={this.handleChange}
-                        />
-                    </p>
-                    <p>
-                        <label htmlFor="password">
-                            <span className={styles.labelText}>Пароль</span>
-                        </label>
-                        <input
-                            type="password"
-                            name="password"
-                            className={classnames(styles.input, 't-input-password')}
-                            value={password}
-                            onChange={this.handleChange}
-                        />
-                    </p>
+	handleSubmit = (event) => {
+		event.preventDefault();
+		
+		const {authorize} = this.props;
+		
+		authorize();
+	}
 
-                    {authError === '' || <p className={styles.error}>{authError}</p>}
-                    
-                    <div className={styles.buttons}>
-                        <button type="submit" className={classnames(styles.button, 't-login')}>
-                            Войти
-                        </button>
-                    </div>
-                </form>
-            </div>
-        );
-    }
+	renderForm = () => {
+		const fields = Object.keys(this.state),
+			{authorize, authError} = this.props,
+			{email, password} = this.state;
+
+		return (
+			<div className={ styles.bg }>
+				<form className={ `${ styles.form } t-form` } onSubmit = { this.handleSubmit }>
+					{ fields.map( field => this.renderField(field) )}
+					{ authError !== '' && <p className={styles.error}> {authError} </p> }
+					<div className={styles.buttons}>
+						<button className={`${styles.button} t-login`} onClick={() => authorize(email, password)}>Войти</button>
+					</div>
+				</form>
+			</div>
+		)
+	}
+
+	render(){
+		const {isAuthorized} = this.props;
+
+		return (
+			<Fragment> {
+				isAuthorized
+				? <Redirect to='/app'/>
+				: this.renderForm()
+			} </Fragment>
+		)
+	}
 }
 
-export default withAuth(LoginForm);
-// Реализуйте компонент формы логина.
-// Используйте `/contexts/Auth` для получения метода authorize
-// и статуса isAuthorized.
-
-// Когда пользователь авторизован - перенаправьте его на роут /app
+export default withAuth(LoginForm)
